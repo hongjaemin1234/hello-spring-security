@@ -19,14 +19,23 @@ public class ProductController {
 
     @GetMapping
     public String list(
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             Model model) {
         
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id"));
-        Page<Product> productPage = productService.getProducts(pageRequest);
+        String normalizedKeyword = (keyword != null && !keyword.isBlank()) ? keyword : null;
+        
+        Page<Product> productPage;
+        if (normalizedKeyword != null) {
+            productPage = productService.searchProducts(normalizedKeyword, pageRequest);
+        } else {
+            productPage = productService.getProducts(pageRequest);
+        }
         
         model.addAttribute("productPage", productPage);
+        model.addAttribute("keyword", normalizedKeyword);
         return "products/list";
     }
 
