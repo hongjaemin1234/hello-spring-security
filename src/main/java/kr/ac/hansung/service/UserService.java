@@ -1,6 +1,7 @@
 package kr.ac.hansung.service;
 
 import kr.ac.hansung.dto.UserDto;
+import kr.ac.hansung.dto.PasswordChangeDto;
 import kr.ac.hansung.entity.Role;
 import kr.ac.hansung.entity.User;
 import kr.ac.hansung.repository.RoleRepository;
