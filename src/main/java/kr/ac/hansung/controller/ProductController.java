@@ -10,6 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import kr.ac.hansung.entity.Product;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/products")
@@ -75,5 +78,17 @@ public class ProductController {
         model.addAttribute("productDto", dto);
         model.addAttribute("productId", id);
         return "products/edit";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editProduct(@PathVariable Long id, @Valid @ModelAttribute("productDto") ProductDto dto,
+                              BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("productId", id);
+            return "products/edit";
+        }
+        productService.updateProduct(id, dto);
+        redirectAttributes.addFlashAttribute("successMessage", "상품이 성공적으로 수정되었습니다.");
+        return "redirect:/products/" + id;
     }
 }
