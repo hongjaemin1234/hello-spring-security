@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import kr.ac.hansung.entity.Product;
 
 @Controller
 @RequestMapping("/products")
@@ -61,5 +62,18 @@ public class ProductController {
     public String delete(@PathVariable Long id) {
         productService.deleteById(id);
         return "redirect:/products";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editProductForm(@PathVariable Long id, Model model) {
+        Product product = productService.findById(id);
+        ProductDto dto = new ProductDto();
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setStock(product.getStock());
+        dto.setDescription(product.getDescription());
+        model.addAttribute("productDto", dto);
+        model.addAttribute("productId", id);
+        return "products/edit";
     }
 }
