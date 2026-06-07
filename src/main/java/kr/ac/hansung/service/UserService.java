@@ -38,4 +38,16 @@ public class UserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    @Transactional
+    public void changePassword(String username, PasswordChangeDto dto) {
+        User user = userRepository.findByEmail(username)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid user"));
+        
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+        
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+    }
 }
